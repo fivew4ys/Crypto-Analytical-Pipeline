@@ -152,3 +152,4 @@ cython_debug/
 # Project specific
 data/
 binance_data/
+reference/
