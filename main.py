@@ -6,12 +6,12 @@ from rich.progress import Progress
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from config import AppConfig
-from api_symbol_fetcher import ApiSymbolFetcher
+from symbol_fetcher import SymbolFetcher
 from downloader import Downloader
 from extractor import Extractor
 from verifier import Verifier
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Binance Data Downloader")
@@ -26,6 +26,8 @@ def parse_args():
     parser.add_argument("--batch-number", type=int, default=1, help="Batch number")
     parser.add_argument("--total-batches", type=int, default=1, help="Total batches")
     parser.add_argument("--retries", type=int, default=3, help="Number of retries")
+    parser.add_argument("--fetch-method", choices=["api", "xml", "json"], default="api", help="Method to fetch symbols: api (default), xml (for Colab), or json")
+    parser.add_argument("--symbol-file", help="Path to JSON file containing symbols (required if fetch-method is json)")
     return parser.parse_args()
 
 def main():
@@ -46,15 +48,16 @@ def main():
             symbol_suffix=args.symbol_suffix,
             batch_number=args.batch_number,
             total_batches=args.total_batches,
-            retries=args.retries
+            retries=args.retries,
+            fetch_method=args.fetch_method,
+            symbol_file=args.symbol_file
         )
     except Exception as e:
         console.print(f"[bold red]Configuration error: {e}[/]")
         return
 
     # Initialize components
-    # Use ApiSymbolFetcher instead of SymbolFetcher
-    fetcher = ApiSymbolFetcher()
+    fetcher = SymbolFetcher()
     downloader = Downloader()
     extractor = Extractor()
     verifier = Verifier()

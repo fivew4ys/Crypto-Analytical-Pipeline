@@ -38,7 +38,7 @@ uv run main.py
 
 ### Configuration
 
-Modify the parameters in the `__main__` block of `main.py` to customize the download:
+Modify the parameters in the `__main__` block of `main.py` or use CLI arguments:
 
 - `asset_type`: "spot", "um" (USD-M Futures), or "cm" (COIN-M Futures)
 - `time_period`: "daily" or "monthly"
@@ -47,6 +47,20 @@ Modify the parameters in the `__main__` block of `main.py` to customize the down
 - `destination_dir`: Directory to save downloaded data
 - `symbol_suffix`: Filter symbols (e.g., ["USDT"])
 - `batch_number` & `total_batches`: For distributed downloading
+- `fetch_method`: "api" (default), "xml", or "json"
+- `symbol_file`: Path to JSON file (required if fetch_method is "json")
+
+### Symbol Fetching Methods
+
+1.  **API (`--fetch-method api`)**: The default method. Fetches symbols directly from Binance API. Fast and reliable.
+2.  **XML (`--fetch-method xml`)**: Scrapes the S3 bucket XML. **Use this in Google Colab** or other environments where the Binance API might be blocked.
+3.  **JSON (`--fetch-method json`)**: Loads symbols from a local JSON file. Use `--symbol-file` to specify the path.
+
+### Example: Google Colab (XML Method)
+
+```bash
+uv run main.py --fetch-method xml --asset-type spot --data-frequency 1h
+```
 
 ## Versioning
 
