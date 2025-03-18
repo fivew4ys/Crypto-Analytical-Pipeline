@@ -17,7 +17,8 @@ class SymbolFetcher(IFetcher):
         self.api_endpoints = {
             "spot": "https://api.binance.com/api/v3/exchangeInfo",
             "um": "https://fapi.binance.com/fapi/v1/exchangeInfo",
-            "cm": "https://dapi.binance.com/dapi/v1/exchangeInfo"
+            "cm": "https://dapi.binance.com/dapi/v1/exchangeInfo",
+            "option": "https://eapi.binance.com/eapi/v1/exchangeInfo"
         }
 
     def get_symbols(self, config: AppConfig) -> List[str]:
@@ -58,6 +59,8 @@ class SymbolFetcher(IFetcher):
         
         if config.asset_type == "spot":
             prefix = f"data/spot/{config.time_period}/{config.data_type}/"
+        elif config.asset_type == "option":
+            prefix = f"data/option/{config.time_period}/{config.data_type}/"
         else:
             prefix = f"data/futures/{config.asset_type}/{config.time_period}/{config.data_type}/"
 
@@ -92,6 +95,8 @@ class SymbolFetcher(IFetcher):
                 symbol_path = common_prefix.text
                 if config.asset_type == "spot":
                     symbol = symbol_path.replace(prefix, "").strip("/")
+                elif config.asset_type == "option":
+                     symbol = symbol_path.replace(prefix, "").strip("/")
                 else:
                     symbol = symbol_path.replace(prefix, "").split('/')[0]
                 if symbol and symbol not in all_symbols:

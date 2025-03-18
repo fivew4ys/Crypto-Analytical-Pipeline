@@ -3,7 +3,7 @@ from typing import List, Optional, Literal
 
 class AppConfig(BaseModel):
     """Application configuration model."""
-    asset_type: Literal["spot", "um", "cm"] = Field(..., description="Asset type: spot, um (USD-M Futures), cm (COIN-M Futures)")
+    asset_type: Literal["spot", "um", "cm", "option"] = Field(..., description="Asset type: spot, um, cm, option")
     time_period: Literal["daily", "monthly"] = Field(..., description="Time period: daily or monthly")
     data_type: str = Field(..., description="Data type: klines, trades, etc.")
     data_frequency: str = Field(..., description="Data frequency: 1m, 1h, 1d, etc.")
@@ -19,8 +19,8 @@ class AppConfig(BaseModel):
     
     @field_validator('asset_type')
     def validate_asset_type(cls, v):
-        if v not in ["spot", "um", "cm"]:
-            raise ValueError("asset_type must be one of 'spot', 'um', 'cm'")
+        if v not in ["spot", "um", "cm", "option"]:
+            raise ValueError("asset_type must be one of 'spot', 'um', 'cm', 'option'")
         return v
 
     @field_validator('time_period')

@@ -73,6 +73,8 @@ class Downloader(IDownloader):
         
         if config.asset_type == "spot":
             base_prefix = f"data/spot/{config.time_period}/{config.data_type}/"
+        elif config.asset_type == "option":
+            base_prefix = f"data/option/{config.time_period}/{config.data_type}/"
         else:
             base_prefix = f"data/futures/{config.asset_type}/{config.time_period}/{config.data_type}/"
 
