@@ -16,6 +16,7 @@ class AppConfig(BaseModel):
     retries: int = Field(3, description="Number of retries for requests")
     fetch_method: Literal["api", "xml", "json"] = Field("api", description="Method to fetch symbols: api, xml, or json")
     symbol_file: Optional[str] = Field(None, description="Path to JSON file containing symbols (required if fetch_method is json)")
+    db_path: Optional[str] = Field(None, description="Path to DuckDB database file (optional)")
     
     @field_validator('asset_type')
     def validate_asset_type(cls, v):
@@ -29,8 +30,10 @@ class AppConfig(BaseModel):
             raise ValueError("time_period must be one of 'daily', 'monthly'")
         return v
 
-    @field_validator('symbol_file')
-    def validate_symbol_file(cls, v, info):
-        if info.data.get('fetch_method') == 'json' and not v:
-            raise ValueError("symbol_file is required when fetch_method is 'json'")
-        return v
+    @classmethod
+    def from_yaml(cls, path: str):
+        """Load configuration from a YAML file."""
+        import yaml
+        with open(path, 'r') as f:
+            data = yaml.safe_load(f)
+        return cls(**data)
