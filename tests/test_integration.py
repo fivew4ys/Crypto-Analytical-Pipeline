@@ -1,11 +1,11 @@
 import os
 import shutil
 import pytest
-from config import AppConfig
-from symbol_fetcher import SymbolFetcher
-from downloader import Downloader
-from extractor import Extractor
-from verifier import Verifier
+from src.config import AppConfig
+from src.symbol_fetcher import SymbolFetcher
+from src.downloader import Downloader
+from src.extractor import Extractor
+from src.verifier import Verifier
 
 @pytest.fixture
 def clean_data_dir():

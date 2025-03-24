@@ -1,13 +1,3 @@
-import argparse
-from rich.console import Console
-from config import AppConfig
-from pipeline import Pipeline
-
-__version__ = "0.5.0"
-
-def parse_args():
-    parser = argparse.ArgumentParser(description="Binance Data Downloader")
-    parser.add_argument("--asset-type", choices=["spot", "um", "cm", "option"], default="spot", help="Asset type")
     parser.add_argument("--time-period", choices=["daily", "monthly"], default="monthly", help="Time period")
     parser.add_argument("--data-type", default="klines", help="Data type (e.g., klines, trades)")
     parser.add_argument("--data-frequency", default="1m", help="Data frequency (e.g., 1m, 1h)")

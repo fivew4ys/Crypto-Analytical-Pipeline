@@ -5,7 +5,7 @@
 # !uv pip install -r requirements.txt
 
 # 2. Import Pipeline
-from pipeline import Pipeline
+from src.pipeline import Pipeline
 
 # 3. Define Configuration
 config = {
