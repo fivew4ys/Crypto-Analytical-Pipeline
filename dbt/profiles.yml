@@ -1,0 +1,8 @@
+crypto_pipeline:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: '../crypto_data.duckdb'  # Path to your DuckDB file relative to dbt dir
+      extensions: 
+        - parquet

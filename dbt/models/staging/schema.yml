@@ -1,0 +1,33 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: main
+    tables:
+      - name: klines
+        description: "Raw klines data loaded from CSVs"
+
+models:
+  - name: stg_klines
+    description: "Staging model for klines data"
+    columns:
+      - name: symbol
+        description: "Trading pair symbol"
+        tests:
+          - not_null
+      - name: open_time_raw
+        description: "Open time in ms or us"
+        tests:
+          - not_null
+      - name: close_price
+        description: "Closing price"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: volume
+        description: "Volume"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
