@@ -11,28 +11,6 @@ A robust Python script for downloading and extracting historical market data fro
 - **Flexible Configuration**: Supports various asset types, time periods, and data frequencies.
 
 ## Requirements
-
-- Python 3.12+
-- uv (for dependency management)
-
-## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd binance-downloader
-   ```
-
-2. Install dependencies using uv:
-   ```bash
-   uv sync
-   ```
-
-## Usage
-
-Run the script using `uv run`:
-
-```bash
 uv run main.py
 ```
 

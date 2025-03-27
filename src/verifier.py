@@ -54,6 +54,7 @@ class Verifier(IVerifier):
                 header = next(reader, None) # Check first row
                 
                 if not header:
+                    self._quarantine_file(file_path, config, "Empty file")
                     return False # Empty file
 
                 # 1. Schema Validation (Column Count)
@@ -61,14 +62,14 @@ class Verifier(IVerifier):
                 expected_cols = self._get_expected_columns(config)
                 
                 if col_count != expected_cols:
-                    self.console.print(f"  [yellow]Schema mismatch: Expected {expected_cols} cols, got {col_count}[/]")
+                    self._quarantine_file(file_path, config, f"Schema mismatch: Expected {expected_cols} cols, got {col_count}")
                     return False
 
                 # 2. Timestamp Validation (First row check)
                 # Open time is usually the first column (index 0)
                 open_time = header[0]
                 if not self._is_valid_timestamp(open_time, file_path, config):
-                     self.console.print(f"  [yellow]Invalid timestamp format: {open_time}[/]")
+                     self._quarantine_file(file_path, config, f"Invalid timestamp format: {open_time}")
                      return False
 
                 return True
@@ -76,6 +77,22 @@ class Verifier(IVerifier):
         except Exception as e:
             self.console.print(f"  [red]Error reading file: {e}[/]")
             return False
+
+    def _quarantine_file(self, file_path: str, config: AppConfig, reason: str):
+        """Move invalid file to quarantine directory."""
+        import shutil
+        
+        quarantine_dir = os.path.join(config.destination_dir, "quarantine")
+        os.makedirs(quarantine_dir, exist_ok=True)
+        
+        file_name = os.path.basename(file_path)
+        dest_path = os.path.join(quarantine_dir, file_name)
+        
+        try:
+            shutil.move(file_path, dest_path)
+            self.console.print(f"  [yellow]Quarantined {file_name}: {reason}[/]")
+        except Exception as e:
+            self.console.print(f"  [bold red]Failed to quarantine {file_name}: {e}[/]")
 
     def _get_expected_columns(self, config: AppConfig) -> int:
         """Return expected column count based on data type and asset type."""

@@ -9,8 +9,13 @@ from src.downloader import Downloader
 from src.extractor import Extractor
 from src.verifier import Verifier
 from src.loader import DuckDBLoader
+from src.schema_monitor import SchemaMonitor
 
 # Define Tasks
+@task(name="Check Schema")
+def check_schema_task(config: AppConfig) -> bool:
+    return SchemaMonitor().check_schema(config)
+
 @task(name="Fetch Symbols", retries=3)
 def fetch_symbols_task(config: AppConfig) -> List[str]:
     return SymbolFetcher().get_symbols(config)
@@ -99,6 +104,11 @@ def crypto_pipeline_flow(config_path: str = None, asset_type: str = "spot"):
             fetch_method="api"
         )
     
+    # 0. Schema Check
+    if not check_schema_task(config):
+        console.print("Schema check failed. Aborting.")
+        return
+
     # 1. Fetch
     symbols = fetch_symbols_task(config)
     if not symbols:

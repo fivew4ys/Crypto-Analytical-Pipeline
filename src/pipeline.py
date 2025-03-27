@@ -3,19 +3,6 @@ from rich.console import Console
 from rich.progress import Progress
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import os
-
-from config import AppConfig
-from symbol_fetcher import SymbolFetcher
-from downloader import Downloader
-from extractor import Extractor
-from verifier import Verifier
-from loader import DuckDBLoader
-
-class Pipeline:
-    """
-    The main entry point for the crypto analytical pipeline.
-    
-    Usage:
         config = { ... }
         pipeline = Pipeline(config)
         pipeline.run()
@@ -38,6 +25,7 @@ class Pipeline:
         self.extractor = Extractor()
         self.verifier = Verifier()
         self.loader = DuckDBLoader()
+        self.schema_monitor = SchemaMonitor()
 
     def run(self):
         """Execute the pipeline."""
@@ -45,6 +33,11 @@ class Pipeline:
         self.console.print(f"Asset Type: {self.config.asset_type}")
         self.console.print(f"Time Period: {self.config.time_period}")
         
+        # 0. Schema Check
+        if not self.schema_monitor.check_schema(self.config):
+            self.console.print("[bold red]Aborting pipeline due to schema mismatch.[/]")
+            return
+
         # Create directory
         os.makedirs(self.config.destination_dir, exist_ok=True)
 

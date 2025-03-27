@@ -1,14 +1,3 @@
-# Google Colab Usage Example
-
-# 1. Install dependencies
-# !pip install uv
-# !uv pip install -r requirements.txt
-
-# 2. Import Pipeline
-from src.pipeline import Pipeline
-
-# 3. Define Configuration
-config = {
     "asset_type": "spot",
     "time_period": "daily",
     "data_type": "klines",
