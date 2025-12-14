@@ -3,13 +3,13 @@ from rich.console import Console
 from typing import List
 import os
 
-from src.config import AppConfig
-from src.symbol_fetcher import SymbolFetcher
-from src.downloader import Downloader
-from src.extractor import Extractor
-from src.verifier import Verifier
-from src.loader import DuckDBLoader
-from src.schema_monitor import SchemaMonitor
+from crypto_pipeline.config import AppConfig
+from crypto_pipeline.symbol_fetcher import SymbolFetcher
+from crypto_pipeline.downloader import Downloader
+from crypto_pipeline.extractor import Extractor
+from crypto_pipeline.verifier import Verifier
+from crypto_pipeline.loader import DuckDBLoader
+from crypto_pipeline.schema_monitor import SchemaMonitor
 
 # Define Tasks
 @task(name="Check Schema")

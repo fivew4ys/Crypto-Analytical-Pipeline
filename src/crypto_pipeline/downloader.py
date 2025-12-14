@@ -5,8 +5,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from rich.progress import Progress, TaskID
 from rich.console import Console
 from xml.etree import ElementTree
-from config import AppConfig
-from interfaces import IDownloader
+from .config import AppConfig
+from .interfaces import IDownloader
 
 class Downloader(IDownloader):
     """Handles downloading of files."""
@@ -81,8 +81,12 @@ class Downloader(IDownloader):
         with Progress() as progress:
             task = progress.add_task("[cyan]Fetching URLs...", total=len(symbols))
             with ThreadPoolExecutor(max_workers=config.max_workers) as executor:
-                futures = [executor.submit(self._fetch_urls_for_prefix, f"{base_prefix}{symbol}/{config.data_frequency}/", config) 
-                          for symbol in symbols]
+                if config.data_frequency:
+                    futures = [executor.submit(self._fetch_urls_for_prefix, f"{base_prefix}{symbol}/{config.data_frequency}/", config) 
+                              for symbol in symbols]
+                else:
+                    futures = [executor.submit(self._fetch_urls_for_prefix, f"{base_prefix}{symbol}/", config) 
+                              for symbol in symbols]
 
                 for future in as_completed(futures):
                     download_urls.extend(future.result())

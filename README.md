@@ -11,6 +11,28 @@ A robust Python script for downloading and extracting historical market data fro
 - **Flexible Configuration**: Supports various asset types, time periods, and data frequencies.
 
 ## Requirements
+
+- Python 3.10+
+- uv (for dependency management)
+
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/fivew4ys/crypto-analytical-pipeline.git
+   cd crypto-analytical-pipeline
+   ```
+
+2. Install dependencies:
+   ```bash
+   uv sync
+   ```
+
+## Usage
+
+Run the script using `uv run`:
+
+```bash
 uv run main.py
 ```
 
@@ -42,7 +64,7 @@ uv run main.py --fetch-method xml --asset-type spot --data-frequency 1h
 
 ## Versioning
 
-Current Version: 0.1.0
+Current Version: 0.6.1
 
 ## License
 

@@ -3,8 +3,8 @@ import glob
 import csv
 from typing import List
 from rich.console import Console
-from src.config import AppConfig
-from src.interfaces import IVerifier
+from .config import AppConfig
+from .interfaces import IVerifier
 
 class Verifier(IVerifier):
     """Verifies downloaded data integrity."""

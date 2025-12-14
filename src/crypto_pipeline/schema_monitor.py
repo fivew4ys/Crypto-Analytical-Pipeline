@@ -1,7 +1,7 @@
 import requests
 from typing import Dict, Any
 from rich.console import Console
-from src.config import AppConfig
+from .config import AppConfig
 
 class SchemaMonitor:
     """
@@ -57,18 +57,23 @@ class SchemaMonitor:
 
             # Validate based on data type
             if config.data_type == "klines":
-                # Klines response is a list of lists
-                # [[Open time, Open, High, ...], ...]
                 if isinstance(data, list) and len(data) > 0:
                     row = data[0]
                     if len(row) != self.expected_columns["klines"]:
-                        self.console.print(f"[bold red]CRITICAL: Schema Mismatch for Klines! Expected 12 columns, got {len(row)}.[/]")
+                        self.console.print(f"[bold red]CRITICAL: Schema Mismatch for Klines! Expected {self.expected_columns['klines']} columns, got {len(row)}.[/]")
                         return False
-            
-            # Note: aggTrades and trades might return list of dicts or list of lists depending on endpoint
-            # For simplicity, we focus on Klines as it's the primary use case. 
-            # Expanding to others follows the same pattern.
-            
+            elif config.data_type == "aggTrades":
+                if isinstance(data, list) and len(data) > 0:
+                    row = data[0]
+                    # Row might be dict or list. API typically returns dict for aggTrades
+                    # But checks on length for CSV usually implies list. 
+                    # Let's check if it's a dict, we count keys.
+                    count = len(row)
+                    expected = self.expected_columns["aggTrades"].get(config.asset_type, 0)
+                    if count != expected:
+                         self.console.print(f"[bold red]CRITICAL: Schema Mismatch for aggTrades! Expected {expected} columns, got {count}.[/]")
+                         return False
+
             self.console.print("[bold green]Schema check passed.[/]")
             return True
 
@@ -93,6 +98,14 @@ class SchemaMonitor:
             return ""
 
         if config.data_type == "klines":
+            if not config.data_frequency:
+                 return ""
             return f"{base}/klines?symbol={symbol}&interval={config.data_frequency}&limit={limit}"
         
+        # For trades/aggTrades, endpoints are different
+        if config.data_type == "aggTrades":
+             return f"{base}/aggTrades?symbol={symbol}&limit={limit}"
+        if config.data_type == "trades":
+             return f"{base}/trades?symbol={symbol}&limit={limit}"
+
         return ""

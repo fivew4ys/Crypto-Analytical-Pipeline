@@ -5,8 +5,8 @@ from typing import List
 from xml.etree import ElementTree
 from rich.console import Console
 from natsort import natsorted
-from config import AppConfig
-from interfaces import IFetcher
+from .config import AppConfig
+from .interfaces import IFetcher
 
 class SymbolFetcher(IFetcher):
     """Fetches symbols using various strategies: API, XML (S3), or JSON file."""

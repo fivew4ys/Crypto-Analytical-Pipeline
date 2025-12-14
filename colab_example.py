@@ -1,3 +1,13 @@
+# Google Colab Usage Example
+
+# 1. Install the Package
+# !pip install git+https://github.com/fivew4ys/Crypto-Analytical-Pipeline.git
+
+# 2. Import Pipeline
+from crypto_pipeline.pipeline import Pipeline
+
+# 3. Define Configuration
+config = {
     "asset_type": "spot",
     "time_period": "daily",
     "data_type": "klines",

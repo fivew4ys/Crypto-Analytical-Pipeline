@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import List, Optional, Literal
 
 class AppConfig(BaseModel):
@@ -6,7 +6,7 @@ class AppConfig(BaseModel):
     asset_type: Literal["spot", "um", "cm", "option"] = Field(..., description="Asset type: spot, um, cm, option")
     time_period: Literal["daily", "monthly"] = Field(..., description="Time period: daily or monthly")
     data_type: str = Field(..., description="Data type: klines, trades, etc.")
-    data_frequency: str = Field(..., description="Data frequency: 1m, 1h, 1d, etc.")
+    data_frequency: Optional[str] = Field(None, description="Data frequency: 1m, 1h, 1d, etc. (Optional for trades)")
     destination_dir: str = Field("./binance_data", description="Directory to save downloaded data")
     max_workers: int = Field(50, description="Max workers for downloading")
     max_extract_workers: int = Field(10, description="Max workers for extraction")
@@ -25,10 +25,20 @@ class AppConfig(BaseModel):
         return v
 
     @field_validator('time_period')
-    def validate_time_period(cls, v):
+    def validate_time_period(cls, v, info):
         if v not in ["daily", "monthly"]:
             raise ValueError("time_period must be one of 'daily', 'monthly'")
+        
+        # Check if asset_type is available in validation info
+        if info.data.get('asset_type') == 'option' and v == 'monthly':
+             raise ValueError("Option data is only available for 'daily' time period.")
         return v
+        
+    @model_validator(mode='after')
+    def check_frequency_requirement(self):
+        if 'klines' in self.data_type.lower() and not self.data_frequency:
+             raise ValueError(f"data_frequency is required for {self.data_type} data type.")
+        return self
 
     @classmethod
     def from_yaml(cls, path: str):

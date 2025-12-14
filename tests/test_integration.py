@@ -1,11 +1,11 @@
 import os
 import shutil
 import pytest
-from src.config import AppConfig
-from src.symbol_fetcher import SymbolFetcher
-from src.downloader import Downloader
-from src.extractor import Extractor
-from src.verifier import Verifier
+from crypto_pipeline.config import AppConfig
+from crypto_pipeline.symbol_fetcher import SymbolFetcher
+from crypto_pipeline.downloader import Downloader
+from crypto_pipeline.extractor import Extractor
+from crypto_pipeline.verifier import Verifier
 
 @pytest.fixture
 def clean_data_dir():

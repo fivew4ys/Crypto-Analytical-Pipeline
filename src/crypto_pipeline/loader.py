@@ -3,8 +3,8 @@ import duckdb
 import glob
 from typing import List
 from rich.console import Console
-from config import AppConfig
-from interfaces import ILoader
+from .config import AppConfig
+from .interfaces import ILoader
 
 class DuckDBLoader(ILoader):
     """Loads data into DuckDB."""

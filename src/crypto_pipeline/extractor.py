@@ -3,8 +3,8 @@ import os
 from io import BytesIO
 from typing import List
 from rich.console import Console
-from config import AppConfig
-from interfaces import IExtractor
+from .config import AppConfig
+from .interfaces import IExtractor
 
 class Extractor(IExtractor):
     """Handles extraction of zip files."""
